@@ -7,6 +7,7 @@ import database
 import doorsettings
 import util
 from doorsettings import config
+from waze import waze
 
 def sendEmail(oldStatus,newStatus):
     logging.debug ("sending email")
@@ -74,8 +75,22 @@ def check_waze_routes():
     logging.debug('checking waze routes')
     db=database.database()
     routes=db.getActiveWazeRoutes()
+    w=waze()
     for route in routes:
-        logging.debug(route)
+        logging.debug('route: %s',route)
+        token=route[0]
+        eta = w.get_eta(token)
+        logging.debug('eta: %s',eta)
+
+        if eta:
+            db.update_eta(token,eta)
+        else:
+            db.deactivateWazeRequest(token)
+            continue
+
+        if eta <120:
+            openDoor()
+            db.deactivateWazeRequest(token)
 
 path=os.path.join(os.path.expanduser('~pi'),'garageDoor')
 fileName=os.path.join(path,'doorstatus.txt')

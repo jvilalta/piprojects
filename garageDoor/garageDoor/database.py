@@ -51,3 +51,16 @@ class database:
         conn.commit()
         conn.close()
         return results
+
+    def update_eta(self,token,eta):
+        logging.debug("updating eta for %s",token)
+        path=os.path.join(os.path.expanduser('~pi'),'garageDoor')
+        fileName=os.path.join(path,'garagedoor.db')
+        conn = sqlite3.connect(fileName)
+        c = conn.cursor()
+        # Insert a row of data
+        sql ="UPDATE waze set final_eta=datetime('now','+{0} second') WHERE token=?".format(int(eta))
+        logging.debug(sql)
+        c.execute(sql,[token])
+        conn.commit()
+        conn.close()

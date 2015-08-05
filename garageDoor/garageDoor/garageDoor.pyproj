@@ -29,6 +29,7 @@
     <Compile Include="doorsettings.py" />
     <Compile Include="util.py" />
     <Compile Include="util_tests.py" />
+    <Compile Include="waze.py" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
 </Project>
